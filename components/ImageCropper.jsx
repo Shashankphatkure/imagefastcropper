@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   Upload,
   Download,
@@ -16,9 +16,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  Label,
-  Switch,
 } from "@/components/ui/dialog";
+import { Slider } from "@/components/ui/slider";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 const ImageCropper = () => {
   const [croppedImages, setCroppedImages] = useState([]);
