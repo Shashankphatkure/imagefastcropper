@@ -1,13 +1,37 @@
 import React, { useState, useRef } from "react";
-import { Upload, Download, X } from "lucide-react";
+import {
+  Upload,
+  Download,
+  X,
+  Settings2,
+  Loader2,
+  Progress,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  Label,
+  Switch,
+} from "@/components/ui/dialog";
 
 const ImageCropper = () => {
   const [croppedImages, setCroppedImages] = useState([]);
   const [error, setError] = useState("");
   const fileInputRef = useRef(null);
+  const [processing, setProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [settings, setSettings] = useState({
+    quality: 0.8,
+    maxSize: 1024,
+    maintainMetadata: true,
+    format: "png",
+  });
 
   const processImage = (file) => {
     return new Promise((resolve, reject) => {
@@ -127,105 +151,210 @@ const ImageCropper = () => {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto backdrop-blur-sm bg-white/90 shadow-2xl border-white/20">
-      <CardHeader>
-        <CardTitle className="text-center text-gray-800">
-          Upload Your Images
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div
-          className="border-2 border-dashed border-blue-200 hover:border-blue-400 rounded-xl p-10 mb-6 text-center transition-colors duration-300 bg-blue-50/50"
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleImageUpload}
-            accept="image/*"
-            multiple
-            className="hidden"
-            id="imageInput"
-          />
-          <label
-            htmlFor="imageInput"
-            className="cursor-pointer flex flex-col items-center gap-3 group"
-          >
-            <div className="p-4 rounded-full bg-blue-100 group-hover:bg-blue-200 transition-colors duration-300">
-              <Upload className="w-8 h-8 text-blue-500" />
-            </div>
-            <div className="space-y-2">
-              <p className="text-lg font-medium text-gray-700">
-                Drop your images here
-              </p>
-              <p className="text-sm text-gray-500">
-                or click to browse from your computer
-              </p>
-            </div>
-          </label>
-        </div>
-
-        {error && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {croppedImages.length > 0 && (
-          <div className="space-y-6">
-            <Button
-              onClick={handleDownloadAll}
-              className="w-full py-6 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              <Download className="w-5 h-5 mr-2" />
-              Download All Images
-            </Button>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {croppedImages.map((image, index) => (
-                <div
-                  key={index}
-                  className="relative group rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
-                >
-                  <img
-                    src={image.dataUrl}
-                    alt={`Cropped ${index + 1}`}
-                    className="w-full aspect-square object-cover"
+    <>
+      <Card className="w-full max-w-4xl mx-auto backdrop-blur-md bg-amber-50/30 shadow-2xl border-amber-100/30">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-amber-900">Image Processing</CardTitle>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="border-amber-200 hover:bg-amber-100/50"
+              >
+                <Settings2 className="w-4 h-4 text-amber-700" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-amber-50/90 backdrop-blur-lg">
+              <DialogHeader>
+                <DialogTitle className="text-amber-900">
+                  Advanced Settings
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-amber-900">
+                    Output Quality ({Math.round(settings.quality * 100)}%)
+                  </Label>
+                  <Slider
+                    value={[settings.quality * 100]}
+                    onValueChange={([value]) =>
+                      setSettings((prev) => ({ ...prev, quality: value / 100 }))
+                    }
+                    max={100}
+                    step={1}
+                    className="[&>div]:bg-amber-200 [&>div>div]:bg-amber-600"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() =>
-                        handleDownloadSingle(image.dataUrl, image.fileName)
-                      }
-                      className="bg-white/90 hover:bg-white"
-                    >
-                      <Download className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleRemoveImage(index)}
-                      className="bg-red-500/90 hover:bg-red-500"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-amber-900">
+                    Maximum Dimension ({settings.maxSize}px)
+                  </Label>
+                  <Slider
+                    value={[settings.maxSize]}
+                    onValueChange={([value]) =>
+                      setSettings((prev) => ({ ...prev, maxSize: value }))
+                    }
+                    min={1024}
+                    max={8192}
+                    step={256}
+                    className="[&>div]:bg-amber-200 [&>div>div]:bg-amber-600"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label className="text-amber-900">Maintain Metadata</Label>
+                  <Switch
+                    checked={settings.maintainMetadata}
+                    onCheckedChange={(checked) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        maintainMetadata: checked,
+                      }))
+                    }
+                    className="data-[state=checked]:bg-amber-600"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-amber-900">Output Format</Label>
+                  <select
+                    className="w-full p-2 border rounded-md bg-amber-50 border-amber-200 text-amber-900 focus:ring-amber-500 focus:border-amber-500"
+                    value={settings.format}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        format: e.target.value,
+                      }))
+                    }
+                  >
+                    <option value="png">PNG</option>
+                    <option value="jpeg">JPEG</option>
+                    <option value="webp">WebP</option>
+                  </select>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </CardHeader>
+        <CardContent>
+          <div
+            className={`border-2 border-dashed border-amber-200 hover:border-amber-400 rounded-xl p-10 mb-6 text-center transition-all duration-300 ${
+              processing
+                ? "bg-amber-50/80"
+                : "bg-amber-50/30 hover:bg-amber-50/50"
+            }`}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            {processing ? (
+              <div className="space-y-4">
+                <Loader2 className="w-8 h-8 text-amber-600 animate-spin mx-auto" />
+                <div className="space-y-2">
+                  <Progress
+                    value={progress}
+                    className="bg-amber-200/50 [&>div]:bg-amber-600"
+                  />
+                  <p className="text-sm text-amber-700">Processing images...</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  id="imageInput"
+                />
+                <label
+                  htmlFor="imageInput"
+                  className="cursor-pointer flex flex-col items-center gap-3 group"
+                >
+                  <div className="p-4 rounded-full bg-amber-100 group-hover:bg-amber-200 transition-colors duration-300">
+                    <Upload className="w-8 h-8 text-amber-600" />
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p className="text-white text-sm truncate">
-                      {image.fileName}
+                  <div className="space-y-2">
+                    <p className="text-lg font-medium text-amber-900">
+                      Drop your images here
+                    </p>
+                    <p className="text-sm text-amber-700">
+                      or click to browse from your computer
                     </p>
                   </div>
-                </div>
-              ))}
-            </div>
+                </label>
+              </>
+            )}
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          {error && (
+            <Alert
+              variant="destructive"
+              className="mb-6 bg-red-100 text-red-900 border-red-200"
+            >
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          {croppedImages.length > 0 && (
+            <div className="space-y-6">
+              <Button
+                onClick={handleDownloadAll}
+                className="w-full py-6 text-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                disabled={processing}
+              >
+                <Download className="w-5 h-5 mr-2" />
+                Download All Images
+              </Button>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {croppedImages.map((image, index) => (
+                  <div
+                    key={index}
+                    className="relative group rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-amber-50/50"
+                  >
+                    <img
+                      src={image.dataUrl}
+                      alt={`Cropped ${index + 1}`}
+                      className="w-full aspect-square object-cover"
+                    />
+                    <div className="absolute inset-0 bg-amber-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() =>
+                          handleDownloadSingle(image.dataUrl, image.fileName)
+                        }
+                        className="bg-amber-50/90 hover:bg-amber-50 text-amber-900"
+                      >
+                        <Download className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleRemoveImage(index)}
+                        className="bg-red-500/90 hover:bg-red-500"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-amber-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <p className="text-amber-50 text-sm font-medium truncate">
+                        {image.fileName}
+                      </p>
+                      <p className="text-amber-100/80 text-xs">
+                        {image.dimensions} • {Math.round(image.size)}KB
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
