@@ -153,28 +153,28 @@ const ImageCropper = () => {
 
   return (
     <>
-      <Card className="w-full max-w-4xl mx-auto backdrop-blur-md bg-amber-50/30 shadow-2xl border-amber-100/30">
+      <Card className="w-full max-w-4xl mx-auto backdrop-blur-md bg-white/30 shadow-2xl border-purple-100/30">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-amber-900">Image Processing</CardTitle>
+          <CardTitle className="text-purple-900">Image Processing</CardTitle>
           <Dialog>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
                 size="icon"
-                className="border-amber-200 hover:bg-amber-100/50"
+                className="border-purple-200 hover:bg-purple-100/50"
               >
-                <Settings2 className="w-4 h-4 text-amber-700" />
+                <Settings2 className="w-4 h-4 text-purple-700" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-amber-50/90 backdrop-blur-lg">
+            <DialogContent className="bg-white/90 backdrop-blur-lg">
               <DialogHeader>
-                <DialogTitle className="text-amber-900">
+                <DialogTitle className="text-purple-900">
                   Advanced Settings
                 </DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-amber-900">
+                  <Label className="text-purple-900">
                     Output Quality ({Math.round(settings.quality * 100)}%)
                   </Label>
                   <Slider
@@ -184,11 +184,11 @@ const ImageCropper = () => {
                     }
                     max={100}
                     step={1}
-                    className="[&>div]:bg-amber-200 [&>div>div]:bg-amber-600"
+                    className="[&>div]:bg-emerald-200 [&>div>div]:bg-purple-600"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-amber-900">
+                  <Label className="text-purple-900">
                     Maximum Dimension ({settings.maxSize}px)
                   </Label>
                   <Slider
@@ -199,11 +199,11 @@ const ImageCropper = () => {
                     min={1024}
                     max={8192}
                     step={256}
-                    className="[&>div]:bg-amber-200 [&>div>div]:bg-amber-600"
+                    className="[&>div]:bg-emerald-200 [&>div>div]:bg-purple-600"
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label className="text-amber-900">Maintain Metadata</Label>
+                  <Label className="text-purple-900">Maintain Metadata</Label>
                   <Switch
                     checked={settings.maintainMetadata}
                     onCheckedChange={(checked) =>
@@ -212,13 +212,13 @@ const ImageCropper = () => {
                         maintainMetadata: checked,
                       }))
                     }
-                    className="data-[state=checked]:bg-amber-600"
+                    className="data-[state=checked]:bg-purple-600"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-amber-900">Output Format</Label>
+                  <Label className="text-purple-900">Output Format</Label>
                   <select
-                    className="w-full p-2 border rounded-md bg-amber-50 border-amber-200 text-amber-900 focus:ring-amber-500 focus:border-amber-500"
+                    className="w-full p-2 border rounded-md bg-white border-purple-200 text-purple-900 focus:ring-purple-500 focus:border-purple-500"
                     value={settings.format}
                     onChange={(e) =>
                       setSettings((prev) => ({
@@ -238,23 +238,23 @@ const ImageCropper = () => {
         </CardHeader>
         <CardContent>
           <div
-            className={`border-2 border-dashed border-amber-200 hover:border-amber-400 rounded-xl p-10 mb-6 text-center transition-all duration-300 ${
-              processing
-                ? "bg-amber-50/80"
-                : "bg-amber-50/30 hover:bg-amber-50/50"
+            className={`border-2 border-dashed border-purple-200 hover:border-purple-400 rounded-xl p-10 mb-6 text-center transition-all duration-300 ${
+              processing ? "bg-white/80" : "bg-white/30 hover:bg-white/50"
             }`}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
           >
             {processing ? (
               <div className="space-y-4">
-                <Loader2 className="w-8 h-8 text-amber-600 animate-spin mx-auto" />
+                <Loader2 className="w-8 h-8 text-purple-600 animate-spin mx-auto" />
                 <div className="space-y-2">
                   <Progress
                     value={progress}
-                    className="bg-amber-200/50 [&>div]:bg-amber-600"
+                    className="bg-emerald-200/50 [&>div]:bg-purple-600"
                   />
-                  <p className="text-sm text-amber-700">Processing images...</p>
+                  <p className="text-sm text-purple-700">
+                    Processing images...
+                  </p>
                 </div>
               </div>
             ) : (
@@ -272,14 +272,14 @@ const ImageCropper = () => {
                   htmlFor="imageInput"
                   className="cursor-pointer flex flex-col items-center gap-3 group"
                 >
-                  <div className="p-4 rounded-full bg-amber-100 group-hover:bg-amber-200 transition-colors duration-300">
-                    <Upload className="w-8 h-8 text-amber-600" />
+                  <div className="p-4 rounded-full bg-purple-100 group-hover:bg-purple-200 transition-colors duration-300">
+                    <Upload className="w-8 h-8 text-purple-600" />
                   </div>
                   <div className="space-y-2">
-                    <p className="text-lg font-medium text-amber-900">
+                    <p className="text-lg font-medium text-purple-900">
                       Drop your images here
                     </p>
-                    <p className="text-sm text-amber-700">
+                    <p className="text-sm text-purple-700">
                       or click to browse from your computer
                     </p>
                   </div>
@@ -301,7 +301,7 @@ const ImageCropper = () => {
             <div className="space-y-6">
               <Button
                 onClick={handleDownloadAll}
-                className="w-full py-6 text-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                className="w-full py-6 text-lg bg-gradient-to-r from-purple-500 to-emerald-500 hover:from-purple-600 hover:to-emerald-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                 disabled={processing}
               >
                 <Download className="w-5 h-5 mr-2" />
@@ -312,14 +312,14 @@ const ImageCropper = () => {
                 {croppedImages.map((image, index) => (
                   <div
                     key={index}
-                    className="relative group rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-amber-50/50"
+                    className="relative group rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white/50"
                   >
                     <img
                       src={image.dataUrl}
                       alt={`Cropped ${index + 1}`}
                       className="w-full aspect-square object-cover"
                     />
-                    <div className="absolute inset-0 bg-amber-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-purple-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <Button
                         size="sm"
@@ -327,7 +327,7 @@ const ImageCropper = () => {
                         onClick={() =>
                           handleDownloadSingle(image.dataUrl, image.fileName)
                         }
-                        className="bg-amber-50/90 hover:bg-amber-50 text-amber-900"
+                        className="bg-white/90 hover:bg-white text-purple-900"
                       >
                         <Download className="w-4 h-4" />
                       </Button>
@@ -340,11 +340,11 @@ const ImageCropper = () => {
                         <X className="w-4 h-4" />
                       </Button>
                     </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-amber-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <p className="text-amber-50 text-sm font-medium truncate">
+                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-purple-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <p className="text-white text-sm font-medium truncate">
                         {image.fileName}
                       </p>
-                      <p className="text-amber-100/80 text-xs">
+                      <p className="text-white/80 text-xs">
                         {image.dimensions} • {Math.round(image.size)}KB
                       </p>
                     </div>
